@@ -1,0 +1,46 @@
+body {
+    background-color: #ffffff;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
+/* Styling for the slider */
+input[type="range"] {
+    width: 70%; 
+    height: 10px; 
+    -webkit-appearance: none; /* Remove default appearance */
+    appearance: none;
+    background: #ddd; /* Light background color */
+    border-radius: 5px;
+    outline: none;
+    /* transition: background 0.3s ease-in-out; */
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #2196f3;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+input[type="range"]:focus {
+    background: #ccc;
+}
+
+/* Styling the labels on the range slider */
+.slider-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+#jspsych-target {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+}
