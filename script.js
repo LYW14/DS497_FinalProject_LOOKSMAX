@@ -13,9 +13,10 @@ var imageStimulus = {
 var attractivenessRatingAndReasons = {
     type: jsPsychHtmlButtonResponse,
     stimulus: function() {
+        var image = jsPsych.timelineVariable('image');
         return `
             <h2>Rate the attractiveness of the person in the photo.</h2>
-            <img src="https://via.placeholder.com/500" alt="Placeholder Face" style="max-width: 500px;">
+            <img src="${image}" alt="Face" style="max-width: 500px;">
             <p>Use the slider to indicate how attractive you find the person.</p>
             <div>
                 <input type="range" id="attractiveness-slider" min="0" max="100" step="10" value="50" style="width: 80%;"/>
@@ -61,9 +62,9 @@ var attractivenessRatingAndReasons = {
 
 // Define the timeline variables (set of images)
 var imageFiles = [
-    { image: '/DS497_FinalProject_LOOKSMAX/Faces/generated_faces/face_001.png' },
-    { image: 'https://via.placeholder.com/500' },  // Add more image URLs or paths to actual images
-    { image: 'https://via.placeholder.com/500' }
+    { image: 'generated_faces/face_001.png' },
+    { image: 'generated_faces/face_007.png' },  // Add more image URLs or paths to actual images
+    { image: 'generated_faces/face_010.png' }
 ];
 
 // Create trials dynamically based on the image files
