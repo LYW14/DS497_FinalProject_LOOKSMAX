@@ -3,11 +3,10 @@ var jsPsych = initJsPsych();
 
 var imageStimulus = {
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: function(){
-        // Replace with an actual image URL later
-        return '<img src="https://via.placeholder.com/500" alt="Placeholder Face" style="max-width: 500px;">';
-    },
-    prompt: "<p>Click any key to proceed to the next part.</p>"
+    stimulus: function() {
+        var image = jsPsych.timelineVariable('image');
+        return `<img src="${image}" style="max-width: 500px;"><p>Press any key to proceed.</p>`;
+    }
 };
 
 // Rating Slider for attractiveness
@@ -62,7 +61,7 @@ var attractivenessRatingAndReasons = {
 
 // Define the timeline variables (set of images)
 var imageFiles = [
-    { image: 'https://via.placeholder.com/500' },
+    { image: '/DS497_FinalProject_LOOKSMAX/Faces/generated_faces/face_001.png' },
     { image: 'https://via.placeholder.com/500' },  // Add more image URLs or paths to actual images
     { image: 'https://via.placeholder.com/500' }
 ];
@@ -110,7 +109,7 @@ jsPsych.run([judgmentTrials, saveData, endTrial]);
 
 // ------------------- Event listeners 
 
-window.onload = function() {
+on_load = function() {
     // Update slider value dynamically
     document.getElementById("attractiveness-slider").addEventListener("input", function() {
         document.getElementById("slider-value").textContent = this.value;
