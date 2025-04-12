@@ -201,7 +201,7 @@ var imageFiles = jsPsych.randomization.sampleWithoutReplacement([
     { image: 'generated_faces/face_473.png' },
 
 ],
-3);
+10);
 
 // Create trials dynamically based on the image files
 var judgmentTrials = {
@@ -219,7 +219,7 @@ var judgmentTrials = {
 };
 
 // Save the data to a CSV file
-var filename = 'Face_Attractiveness_Data_test1.csv';
+var filename = 'Face_Attractiveness_' + Date.now() + '.csv';
 
 var saveData = {
     type: jsPsychPipe,
