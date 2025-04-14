@@ -21,7 +21,7 @@ var attractivenessRatingAndReasons = {
             <div>
                 <input type="range" id="attractiveness-slider" min="0" max="100" step="10" value="50" style="width: 80%;">
             </div>
-            <h3>What features based off your rating contributed to their attractiveness? (Select all that apply)</h3>
+            <h3>What features contributed to their attractiveness? (Select all that apply)</h3>
             <div>
                 <label><input type="checkbox" name="reasons" value="Mouth"> Mouth</label><br>
                 <label><input type="checkbox" name="reasons" value="Eyes"> Eyes</label><br>
