@@ -21,13 +21,14 @@ var attractivenessRatingAndReasons = {
             <div>
                 <input type="range" id="attractiveness-slider" min="0" max="100" step="10" value="50" style="width: 80%;">
             </div>
-            <h3>Why do you find this person attractive? (Select all that apply)</h3>
+            <h3>What features based off your rating contributed to their attractiveness? (Select all that apply)</h3>
             <div>
-                <label><input type="checkbox" name="reasons" value="Nice"> Nice</label><br>
-                <label><input type="checkbox" name="reasons" value="Happy"> Happy</label><br>
-                <label><input type="checkbox" name="reasons" value="Sad"> Sad</label><br>
-                <label><input type="checkbox" name="reasons" value="Interesting"> Interesting</label><br>
-                <label><input type="checkbox" name="reasons" value="Confident"> Confident</label><br>
+                <label><input type="checkbox" name="reasons" value="Mouth"> Mouth</label><br>
+                <label><input type="checkbox" name="reasons" value="Eyes"> Eyes</label><br>
+                <label><input type="checkbox" name="reasons" value="Nose"> Nose</label><br>
+                <label><input type="checkbox" name="reasons" value="Ears"> Ears</label><br>
+                <label><input type="checkbox" name="reasons" value="Jaw"> Jaw</label><br>
+                <label><input type="checkbox" name="reasons" value="Hair"> Hair</label><br>
                 <label><input type="checkbox" id="other-checkbox" name="reasons" value="Other"> Other</label>
                 <div id="other-text-container" style="display: none;">
                     <label for="other-text">Please specify:</label>
