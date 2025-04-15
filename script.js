@@ -1,29 +1,38 @@
 // Initialize jsPsych
 var jsPsych = initJsPsych();
 
+// Modified image stimulus with improved touch handling
 var imageStimulus = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: function() {
         var image = jsPsych.timelineVariable('image');
-        return `<img src="${image}" style="max-width: 100%; max-height: 70vh;" class="touch-responsive">
-                <p>Press any key or tap the image to proceed.</p>`;
+        return `
+            <div id="touch-container" style="width: 100%; height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <img src="${image}" style="max-width: 100%; max-height: 70vh;">
+                <p style="margin-top: 20px;">Press any key or tap anywhere to proceed.</p>
+            </div>`;
     },
     on_load: function() {
-        // Add touch event listener to the image
-        const touchElement = document.querySelector('.touch-responsive');
-        if (touchElement) {
-            touchElement.addEventListener('touchstart', function() {
-                jsPsych.finishTrial();
-            });
-            // Also add click event for desktop testing of touch functionality
-            touchElement.addEventListener('click', function() {
-                jsPsych.finishTrial();
-            });
+        // Add touch event listeners to the entire screen
+        document.addEventListener('touchend', endTrialOnTouch);
+        document.addEventListener('click', endTrialOnTouch);
+        
+        function endTrialOnTouch(e) {
+            e.preventDefault();
+            jsPsych.finishTrial();
+            // Remove event listeners to prevent multiple triggers
+            document.removeEventListener('touchend', endTrialOnTouch);
+            document.removeEventListener('click', endTrialOnTouch);
         }
+    },
+    on_finish: function() {
+        // Clean up any remaining event listeners when the trial ends
+        document.removeEventListener('touchend', endTrialOnTouch);
+        document.removeEventListener('click', endTrialOnTouch);
     }
 };
 
-// Rating Slider for attractiveness
+// Rating Slider for attractiveness - keeping the same UI improvements
 var attractivenessRatingAndReasons = {
     type: jsPsychHtmlButtonResponse,
     stimulus: function() {
@@ -74,6 +83,11 @@ var attractivenessRatingAndReasons = {
                     vertical-align: middle;
                     margin-right: 10px;
                 }
+                label {
+                    display: flex;
+                    align-items: center;
+                    padding: 10px 0;
+                }
                 @media (max-width: 768px) {
                     h2 { font-size: 20px; }
                     h3 { font-size: 18px; }
@@ -101,6 +115,12 @@ var attractivenessRatingAndReasons = {
             checkbox.style.width = '24px';
             checkbox.style.height = '24px';
         });
+        
+        // Make the checkbox labels more tappable
+        const labels = document.querySelectorAll('label');
+        labels.forEach(function(label) {
+            label.style.cursor = 'pointer';
+        });
     }
 };
 
@@ -123,117 +143,8 @@ function captureAttractivenessData() {
 // Define the timeline variables (set of images)
 var imageFiles = jsPsych.randomization.sampleWithoutReplacement([
     { image: 'generated_faces/face_001.png' },
-    { image: 'generated_faces/face_007.png' },  // Add more image URLs or paths to actual images
-    { image: 'generated_faces/face_010.png' },
-    { image: 'generated_faces/face_011.png' },
-    { image: 'generated_faces/face_013.png' },
-    { image: 'generated_faces/face_020.png' },
-    { image: 'generated_faces/face_021.png' },
-    { image: 'generated_faces/face_029.png' },
-    { image: 'generated_faces/face_030.png' },
-    { image: 'generated_faces/face_033.png' },
-    { image: 'generated_faces/face_039.png' },
-    { image: 'generated_faces/face_041.png' },
-    { image: 'generated_faces/face_054.png' },
-    { image: 'generated_faces/face_057.png' },
-    { image: 'generated_faces/face_059.png' },
-    { image: 'generated_faces/face_060.png' },
-    { image: 'generated_faces/face_061.png' },
-    { image: 'generated_faces/face_062.png' },
-    { image: 'generated_faces/face_073.png' },
-    { image: 'generated_faces/face_076.png' },
-    { image: 'generated_faces/face_077.png' },
-    { image: 'generated_faces/face_078.png' },
-    { image: 'generated_faces/face_079.png' },
-    { image: 'generated_faces/face_080.png' },
-    { image: 'generated_faces/face_085.png' },
-    { image: 'generated_faces/face_092.png' },
-    { image: 'generated_faces/face_095.png' },
-    { image: 'generated_faces/face_102.png' },
-    { image: 'generated_faces/face_103.png' },
-    { image: 'generated_faces/face_108.png' },
-    { image: 'generated_faces/face_115.png' },
-    { image: 'generated_faces/face_117.png' },
-    { image: 'generated_faces/face_132.png' },
-    { image: 'generated_faces/face_133.png' },
-    { image: 'generated_faces/face_136.png' },
-    { image: 'generated_faces/face_137.png' },
-    { image: 'generated_faces/face_140.png' },
-    { image: 'generated_faces/face_146.png' },
-    { image: 'generated_faces/face_147.png' },
-    { image: 'generated_faces/face_149.png' },
-    { image: 'generated_faces/face_151.png' },
-    { image: 'generated_faces/face_155.png' },
-    { image: 'generated_faces/face_156.png' },
-    { image: 'generated_faces/face_160.png' },
-    { image: 'generated_faces/face_162.png' },
-    { image: 'generated_faces/face_167.png' },
-    { image: 'generated_faces/face_174.png' },
-    { image: 'generated_faces/face_178.png' },
-    { image: 'generated_faces/face_180.png' },
-    { image: 'generated_faces/face_184.png' },
-    { image: 'generated_faces/face_185.png' },
-    { image: 'generated_faces/face_199.png' },
-    { image: 'generated_faces/face_200.png' },
-    { image: 'generated_faces/face_204.png' },
-    { image: 'generated_faces/face_205.png' },
-    { image: 'generated_faces/face_217.png' },
-    { image: 'generated_faces/face_218.png' },
-    { image: 'generated_faces/face_220.png' },
-    { image: 'generated_faces/face_230.png' },
-    { image: 'generated_faces/face_238.png' },
-    { image: 'generated_faces/face_239.png' },
-    { image: 'generated_faces/face_241.png' },
-    { image: 'generated_faces/face_250.png' },
-    { image: 'generated_faces/face_251.png' },
-    { image: 'generated_faces/face_255.png' },
-    { image: 'generated_faces/face_260.png' },
-    { image: 'generated_faces/face_265.png' },
-    { image: 'generated_faces/face_270.png' },
-    { image: 'generated_faces/face_275.png' },
-    { image: 'generated_faces/face_277.png' },
-    { image: 'generated_faces/face_283.png' },
-    { image: 'generated_faces/face_285.png' },
-    { image: 'generated_faces/face_309.png' },
-    { image: 'generated_faces/face_313.png' },
-    { image: 'generated_faces/face_315.png' },
-    { image: 'generated_faces/face_318.png' },
-    { image: 'generated_faces/face_320.png' },
-    { image: 'generated_faces/face_325.png' },
-    { image: 'generated_faces/face_331.png' },
-    { image: 'generated_faces/face_333.png' },
-    { image: 'generated_faces/face_350.png' },
-    { image: 'generated_faces/face_352.png' },
-    { image: 'generated_faces/face_353.png' },
-    { image: 'generated_faces/face_355.png' },
-    { image: 'generated_faces/face_357.png' },
-    { image: 'generated_faces/face_358.png' },
-    { image: 'generated_faces/face_359.png' },
-    { image: 'generated_faces/face_366.png' },
-    { image: 'generated_faces/face_372.png' },
-    { image: 'generated_faces/face_376.png' },
-    { image: 'generated_faces/face_377.png' },
-    { image: 'generated_faces/face_378.png' },
-    { image: 'generated_faces/face_387.png' },
-    { image: 'generated_faces/face_388.png' },
-    { image: 'generated_faces/face_390.png' },
-    { image: 'generated_faces/face_392.png' },
-    { image: 'generated_faces/face_404.png' },
-    { image: 'generated_faces/face_408.png' },
-    { image: 'generated_faces/face_411.png' },
-    { image: 'generated_faces/face_419.png' },
-    { image: 'generated_faces/face_420.png' },
-    { image: 'generated_faces/face_421.png' },
-    { image: 'generated_faces/face_422.png' },
-    { image: 'generated_faces/face_423.png' },
-    { image: 'generated_faces/face_424.png' },
-    { image: 'generated_faces/face_425.png' },
-    { image: 'generated_faces/face_431.png' },
-    { image: 'generated_faces/face_433.png' },
-    { image: 'generated_faces/face_435.png' },
-    { image: 'generated_faces/face_438.png' },
-    { image: 'generated_faces/face_463.png' },
-    { image: 'generated_faces/face_472.png' },
+    { image: 'generated_faces/face_007.png' },
+    // [... keep all your existing images ...]
     { image: 'generated_faces/face_473.png' },
 ],
 10);
@@ -241,21 +152,22 @@ var imageFiles = jsPsych.randomization.sampleWithoutReplacement([
 // Create trials dynamically based on the image files
 var judgmentTrials = {
     timeline: [
-        imageStimulus,  // Image display
-        attractivenessRatingAndReasons // Combined attractiveness rating and reasons
+        imageStimulus,
+        attractivenessRatingAndReasons
     ],
     timeline_variables: imageFiles.map(function(imageData) {
         return {
             image: imageData.image
         };
     }),
-    randomize_order: true // Randomize the image order
+    randomize_order: true
 };
 
-// mobile dev
-document.head.insertAdjacentHTML('beforeend', `
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <style>
+// Add viewport meta tag and necessary styles
+function addMobileStyles() {
+    // Create a style element
+    var style = document.createElement('style');
+    style.innerHTML = `
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -263,18 +175,12 @@ document.head.insertAdjacentHTML('beforeend', `
             max-width: 100%;
             box-sizing: border-box;
             touch-action: manipulation;
-        }
-        .touch-responsive {
-            cursor: pointer;
-            -webkit-tap-highlight-color: rgba(0,0,0,0);
-        }
-        .jspsych-btn {
-            touch-action: manipulation;
+            -webkit-text-size-adjust: 100%;
         }
         input[type="range"] {
             -webkit-appearance: none;
             height: 25px;
-            background: #d3d3d3;
+            background: #d3d3d3; 
             outline: none;
             border-radius: 12px;
         }
@@ -287,8 +193,34 @@ document.head.insertAdjacentHTML('beforeend', `
             cursor: pointer;
             border-radius: 50%;
         }
-    </style>
-`);
+        .jspsych-btn {
+            touch-action: manipulation;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 15px 25px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .jspsych-btn:active {
+            background-color: #3e8e41;
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Add viewport meta tag
+    var meta = document.createElement('meta');
+    meta.name = 'viewport';
+    meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+    document.head.appendChild(meta);
+    
+    // Add event listener to prevent unwanted zooming on iOS
+    document.addEventListener('gesturestart', function(e) {
+        e.preventDefault();
+    });
+}
 
 // Save the data to a CSV file
 var filename = 'Face_Attractiveness_' + Date.now() + '.csv';
@@ -299,26 +231,37 @@ var saveData = {
     experiment_id: "patXCp7HrMNc",
     filename: filename,
     data_string: function() {
-        return jsPsych.data.get().csv(); // Convert data to CSV format
+        return jsPsych.data.get().csv();
     },
     on_finish: function(data) {
         alert('Data saved successfully!');
     }
 };
 
-// End trial
+// End trial with improved touch handling
 const endTrial = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: '<div style="font-size: 24px; text-align: center; margin-top: 40px;">Thank you for participating!<br><br>Tap anywhere or press any key to finish.</div>',
     on_load: function() {
-        document.addEventListener('touchstart', function() {
+        function finishEndTrial(e) {
+            if (e) e.preventDefault();
             jsPsych.finishTrial();
-        }, {once: true});
-        document.addEventListener('click', function() {
-            jsPsych.finishTrial();
-        }, {once: true});
+            document.removeEventListener('touchend', finishEndTrial);
+            document.removeEventListener('click', finishEndTrial);
+        }
+        
+        document.addEventListener('touchend', finishEndTrial);
+        document.addEventListener('click', finishEndTrial);
+    }
+};
+
+// Initialize mobile styles before running the experiment
+var initTrial = {
+    type: jsPsychCallFunction,
+    func: function() {
+        addMobileStyles();
     }
 };
 
 // Run the experiment
-jsPsych.run([judgmentTrials, saveData, endTrial]);
+jsPsych.run([initTrial, judgmentTrials, saveData, endTrial]);
