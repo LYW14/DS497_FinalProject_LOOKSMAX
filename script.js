@@ -11,7 +11,9 @@ var imageStimulus = {
             <p style="font-size: 18px; margin-top: 20px;">Tap the image or screen to continue.</p>
         </div>
         `;
-    }
+    }, 
+    choices: ['Continue'],
+    button_html: '<button class="jspsych-btn" style="opacity: 0; position: absolute; top: 0; left: 0; width: 100%; height: 100%;">%choice%</button>'
 };
 
 // Rating Slider for attractiveness
