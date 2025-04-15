@@ -1,20 +1,20 @@
 // Initialize jsPsych
 var jsPsych = initJsPsych();
 
-var imageStimulus = {
-    type: jsPsychHtmlButtonResponse,
-    stimulus: function() {
-        var image = jsPsych.timelineVariable('image');
-        return `
-        <div style="text-align: center;">
-            <img src="${image}" style="max-width: 100%; max-height: 70vh;" class="touch-responsive">
-            <p style="font-size: 18px; margin-top: 20px;">Tap the image or screen to continue.</p>
-        </div>
-        `;
-    }, 
-    choices: ['Continue'],
-    button_html: '<button class="jspsych-btn" style="opacity: 0; position: absolute; top: 0; left: 0; width: 100%; height: 100%;">%choice%</button>'
-};
+// var imageStimulus = {
+//     type: jsPsychHtmlButtonResponse,
+//     stimulus: function() {
+//         var image = jsPsych.timelineVariable('image');
+//         return `
+//         <div style="text-align: center;">
+//             <img src="${image}" style="max-width: 100%; max-height: 70vh;" class="touch-responsive">
+//             <p style="font-size: 18px; margin-top: 20px;">Tap the image or screen to continue.</p>
+//         </div>
+//         `;
+//     }, 
+//     choices: ['Continue'],
+//     button_html: '<button class="jspsych-btn" style="opacity: 0; position: absolute; top: 0; left: 0; width: 100%; height: 100%;">%choice%</button>'
+// };
 
 // Rating Slider for attractiveness
 var attractivenessRatingAndReasons = {
@@ -234,7 +234,7 @@ var imageFiles = jsPsych.randomization.sampleWithoutReplacement([
 // Create trials dynamically based on the image files
 var judgmentTrials = {
     timeline: [
-        imageStimulus,  // Image display
+        // imageStimulus,  // Image display
         attractivenessRatingAndReasons // Combined attractiveness rating and reasons
     ],
     timeline_variables: imageFiles.map(function(imageData) {
