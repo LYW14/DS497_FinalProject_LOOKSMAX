@@ -1,6 +1,28 @@
 // Initialize jsPsych
 var jsPsych = initJsPsych();
 
+var imageStimulus = {
+    type: jsPsychHtmlKeyboardResponse,
+    // stimulus: function() {
+    //     var image = jsPsych.timelineVariable('image');
+    //     return `<img src="${image}" style="max-width: 100%; max-height: 70vh;" class="touch-responsive">
+    //             <p>Press any key or tap the image to proceed.</p>`;
+    // },
+    stimulus: function() {
+        // Add touch event listener to the image
+        const touchElement = document.querySelector('.touch-responsive');
+        if (touchElement) {
+            touchElement.addEventListener('touchstart', function() {
+                jsPsych.finishTrial();
+            });
+            // Also add click event for desktop testing of touch functionality
+            touchElement.addEventListener('click', function() {
+                jsPsych.finishTrial();
+            });
+        }
+    }
+};
+
 // Rating Slider for attractiveness
 var attractivenessRatingAndReasons = {
     type: jsPsychHtmlButtonResponse,
@@ -8,7 +30,7 @@ var attractivenessRatingAndReasons = {
         var image = jsPsych.timelineVariable('image');
         return `
             <h2>Rate the attractiveness of the person in the photo.</h2>
-            <img src="${image}" alt="Face" style="max-width: 100%; max-height: 50vh;">
+            <img src="${image}" alt="Face" style="max-width: 100%; max-height: 40vh;">
             <p>Use the slider to indicate how attractive you find the person.</p>
             <div>
                 <input type="range" id="attractiveness-slider" min="0" max="100" step="10" value="50" style="width: 90%; margin: 20px auto;">
@@ -52,11 +74,6 @@ var attractivenessRatingAndReasons = {
                     vertical-align: middle;
                     margin-right: 10px;
                 }
-                label {
-                    display: flex;
-                    align-items: center;
-                    padding: 10px 0;
-                }
                 @media (max-width: 768px) {
                     h2 { font-size: 20px; }
                     h3 { font-size: 18px; }
@@ -84,12 +101,6 @@ var attractivenessRatingAndReasons = {
             checkbox.style.width = '24px';
             checkbox.style.height = '24px';
         });
-        
-        // Make the checkbox labels more tappable
-        const labels = document.querySelectorAll('label');
-        labels.forEach(function(label) {
-            label.style.cursor = 'pointer';
-        });
     }
 };
 
@@ -112,7 +123,7 @@ function captureAttractivenessData() {
 // Define the timeline variables (set of images)
 var imageFiles = jsPsych.randomization.sampleWithoutReplacement([
     { image: 'generated_faces/face_001.png' },
-    { image: 'generated_faces/face_007.png' },
+    { image: 'generated_faces/face_007.png' },  // Add more image URLs or paths to actual images
     { image: 'generated_faces/face_010.png' },
     { image: 'generated_faces/face_011.png' },
     { image: 'generated_faces/face_013.png' },
@@ -227,24 +238,24 @@ var imageFiles = jsPsych.randomization.sampleWithoutReplacement([
 ],
 10);
 
-// Create trials dynamically based on the image files - removed the imageStimulus step
+// Create trials dynamically based on the image files
 var judgmentTrials = {
     timeline: [
-        attractivenessRatingAndReasons // Only using the rating component now
+        imageStimulus,  // Image display
+        attractivenessRatingAndReasons // Combined attractiveness rating and reasons
     ],
     timeline_variables: imageFiles.map(function(imageData) {
         return {
             image: imageData.image
         };
     }),
-    randomize_order: true
+    randomize_order: true // Randomize the image order
 };
 
-// Add viewport meta tag and necessary styles
-function addMobileStyles() {
-    // Create a style element
-    var style = document.createElement('style');
-    style.innerHTML = `
+// mobile dev
+document.head.insertAdjacentHTML('beforeend', `
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -252,12 +263,18 @@ function addMobileStyles() {
             max-width: 100%;
             box-sizing: border-box;
             touch-action: manipulation;
-            -webkit-text-size-adjust: 100%;
+        }
+        .touch-responsive {
+            cursor: pointer;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+        }
+        .jspsych-btn {
+            touch-action: manipulation;
         }
         input[type="range"] {
             -webkit-appearance: none;
             height: 25px;
-            background: #d3d3d3; 
+            background: #d3d3d3;
             outline: none;
             border-radius: 12px;
         }
@@ -270,34 +287,8 @@ function addMobileStyles() {
             cursor: pointer;
             border-radius: 50%;
         }
-        .jspsych-btn {
-            touch-action: manipulation;
-            cursor: pointer;
-            font-size: 18px;
-            padding: 15px 25px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            margin-top: 20px;
-        }
-        .jspsych-btn:active {
-            background-color: #3e8e41;
-        }
-    `;
-    document.head.appendChild(style);
-    
-    // Add viewport meta tag
-    var meta = document.createElement('meta');
-    meta.name = 'viewport';
-    meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-    document.head.appendChild(meta);
-    
-    // Add event listener to prevent unwanted zooming on iOS
-    document.addEventListener('gesturestart', function(e) {
-        e.preventDefault();
-    });
-}
+    </style>
+`);
 
 // Save the data to a CSV file
 var filename = 'Face_Attractiveness_' + Date.now() + '.csv';
@@ -308,39 +299,26 @@ var saveData = {
     experiment_id: "patXCp7HrMNc",
     filename: filename,
     data_string: function() {
-        return jsPsych.data.get().csv();
+        return jsPsych.data.get().csv(); // Convert data to CSV format
     },
     on_finish: function(data) {
         alert('Data saved successfully!');
     }
 };
 
-// End trial with improved touch handling
+// End trial
 const endTrial = {
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: '<div style="font-size: 24px; text-align: center; margin-top: 40px;">Thank you for participating!</div>',
+    stimulus: '<div style="font-size: 24px; text-align: center; margin-top: 40px;">Thank you for participating!<br><br>Tap anywhere or press any key to finish.</div>',
     on_load: function() {
-        function finishEndTrial(e) {
-            if (e) e.preventDefault();
+        document.addEventListener('touchstart', function() {
             jsPsych.finishTrial();
-            document.removeEventListener('touchend', finishEndTrial);
-            document.removeEventListener('click', finishEndTrial);
-            document.removeEventListener('keydown', finishEndTrial);
-        }
-        
-        document.addEventListener('touchend', finishEndTrial);
-        document.addEventListener('click', finishEndTrial);
-        document.addEventListener('keydown', finishEndTrial);
-    }
-};
-
-// Initialize mobile styles before running the experiment
-var initTrial = {
-    type: jsPsychCallFunction,
-    func: function() {
-        addMobileStyles();
+        }, {once: true});
+        document.addEventListener('click', function() {
+            jsPsych.finishTrial();
+        }, {once: true});
     }
 };
 
 // Run the experiment
-jsPsych.run([initTrial, judgmentTrials, saveData, endTrial]);
+jsPsych.run([judgmentTrials, saveData, endTrial]);
