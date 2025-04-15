@@ -5,7 +5,8 @@ var imageStimulus = {
     type: jsPsychHtmlButtonResponse,
     stimulus: function() {
         var image = jsPsych.timelineVariable('image');
-        return `<img src="${image}" style="max-width: 100%; max-height: 70vh;" class="touch-responsive">`;
+        return `<img src="${image}" style="max-width: 100%; max-height: 70vh;" class="touch-responsive">
+        <p>Press any key or tap the screen to proceed.</p>`;
     },
     // button_html: '<div style="position:absolute;top:0;left:0;width:100%;height:100%;"></div>',
     // on_load: function() {
