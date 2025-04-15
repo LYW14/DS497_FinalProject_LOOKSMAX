@@ -7,20 +7,19 @@ var imageStimulus = {
         var image = jsPsych.timelineVariable('image');
         return `<img src="${image}" style="max-width: 100%; max-height: 70vh;" class="touch-responsive">`;
     },
-    choices: [''],  // Empty string for "invisible" button
-    button_html: '<div style="position:absolute;top:0;left:0;width:100%;height:100%;"></div>',
-    on_load: function() {
-        const touchElement = document.querySelector('.touch-responsive');
-        if (touchElement) {
-            touchElement.addEventListener('touchstart', function () {
-                jsPsych.finishTrial();
-            }, { once: true });
+    // button_html: '<div style="position:absolute;top:0;left:0;width:100%;height:100%;"></div>',
+    // on_load: function() {
+    //     const touchElement = document.querySelector('.touch-responsive');
+    //     if (touchElement) {
+    //         touchElement.addEventListener('touchstart', function () {
+    //             jsPsych.finishTrial();
+    //         }, { once: true });
 
-            touchElement.addEventListener('click', function () {
-                jsPsych.finishTrial();
-            }, { once: true });
-        }
-    }
+    //         touchElement.addEventListener('click', function () {
+    //             jsPsych.finishTrial();
+    //         }, { once: true });
+    //     }
+    // }
 };
 
 // Rating Slider for attractiveness
