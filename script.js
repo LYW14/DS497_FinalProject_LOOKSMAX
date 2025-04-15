@@ -5,7 +5,21 @@ var imageStimulus = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: function() {
         var image = jsPsych.timelineVariable('image');
-        return `<img src="${image}" style="max-width: 500px;"><p>Press any key to proceed.</p>`;
+        return `<img src="${image}" style="max-width: 100%; max-height: 70vh;" class="touch-responsive">
+                <p>Press any key or tap the image to proceed.</p>`;
+    },
+    on_load: function() {
+        // Add touch event listener to the image
+        const touchElement = document.querySelector('.touch-responsive');
+        if (touchElement) {
+            touchElement.addEventListener('touchstart', function() {
+                jsPsych.finishTrial();
+            });
+            // Also add click event for desktop testing of touch functionality
+            touchElement.addEventListener('click', function() {
+                jsPsych.finishTrial();
+            });
+        }
     }
 };
 
@@ -16,29 +30,61 @@ var attractivenessRatingAndReasons = {
         var image = jsPsych.timelineVariable('image');
         return `
             <h2>Rate the attractiveness of the person in the photo.</h2>
-            <img src="${image}" alt="Face" style="max-width: 500px;">
+            <img src="${image}" alt="Face" style="max-width: 100%; max-height: 40vh;">
             <p>Use the slider to indicate how attractive you find the person.</p>
             <div>
-                <input type="range" id="attractiveness-slider" min="0" max="100" step="10" value="50" style="width: 80%;">
+                <input type="range" id="attractiveness-slider" min="0" max="100" step="10" value="50" style="width: 90%; margin: 20px auto;">
             </div>
             <h3>What features contributed to their attractiveness? (Select all that apply)</h3>
-            <div>
-                <label><input type="checkbox" name="reasons" value="Mouth"> Mouth</label><br>
-                <label><input type="checkbox" name="reasons" value="Eyes"> Eyes</label><br>
-                <label><input type="checkbox" name="reasons" value="Nose"> Nose</label><br>
-                <label><input type="checkbox" name="reasons" value="Ears"> Ears</label><br>
-                <label><input type="checkbox" name="reasons" value="Jaw"> Jaw</label><br>
-                <label><input type="checkbox" name="reasons" value="Hair"> Hair</label><br>
-                <label><input type="checkbox" id="other-checkbox" name="reasons" value="Other"> Other</label>
-                <div id="other-text-container" style="display: none;">
+            <div style="text-align: left; max-width: 300px; margin: 0 auto;">
+                <div class="checkbox-item">
+                    <label><input type="checkbox" name="reasons" value="Mouth"> Mouth</label>
+                </div>
+                <div class="checkbox-item">
+                    <label><input type="checkbox" name="reasons" value="Eyes"> Eyes</label>
+                </div>
+                <div class="checkbox-item">
+                    <label><input type="checkbox" name="reasons" value="Nose"> Nose</label>
+                </div>
+                <div class="checkbox-item">
+                    <label><input type="checkbox" name="reasons" value="Ears"> Ears</label>
+                </div>
+                <div class="checkbox-item">
+                    <label><input type="checkbox" name="reasons" value="Jaw"> Jaw</label>
+                </div>
+                <div class="checkbox-item">
+                    <label><input type="checkbox" name="reasons" value="Hair"> Hair</label>
+                </div>
+                <div class="checkbox-item">
+                    <label><input type="checkbox" id="other-checkbox" name="reasons" value="Other"> Other</label>
+                </div>
+                <div id="other-text-container" style="display: none; margin-top: 10px;">
                     <label for="other-text">Please specify:</label>
-                    <input type="text" id="other-text" name="other-text" placeholder="100 character limit" maxLength="100">
+                    <input type="text" id="other-text" name="other-text" placeholder="100 character limit" maxLength="100" style="width: 100%;">
                 </div>
             </div>
+            <style>
+                .checkbox-item {
+                    margin: 10px 0;
+                    font-size: 16px;
+                }
+                input[type="checkbox"] {
+                    width: 20px;
+                    height: 20px;
+                    vertical-align: middle;
+                    margin-right: 10px;
+                }
+                @media (max-width: 768px) {
+                    h2 { font-size: 20px; }
+                    h3 { font-size: 18px; }
+                    p { font-size: 16px; }
+                    .checkbox-item { font-size: 16px; }
+                }
+            </style>
         `;
     },
     choices: ["Next image"],
-    button_html: '<button class="jspsych-btn" onclick="captureAttractivenessData()">%choice%</button>',
+    button_html: '<button class="jspsych-btn" style="padding: 12px 24px; font-size: 18px; margin-top: 20px;" onclick="captureAttractivenessData()">%choice%</button>',
     on_load: function () {
         const otherCheckbox = document.getElementById("other-checkbox");
         const otherTextContainer = document.getElementById("other-text-container");
@@ -48,8 +94,14 @@ var attractivenessRatingAndReasons = {
                 otherTextContainer.style.display = this.checked ? "block" : "none";
             });
         }
+        
+        // Make checkboxes larger and more touch-friendly
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.style.width = '24px';
+            checkbox.style.height = '24px';
+        });
     }
-
 };
 
 function captureAttractivenessData() {
@@ -67,23 +119,6 @@ function captureAttractivenessData() {
         other_reason_text: otherReasonText
     });
 }
-
-// Reasons for attractiveness
-// var reasonsForAttractiveness = {
-//     type: jsPsychSurveyMultiSelect,
-//     questions: [
-//         {
-//             prompt: "Why do you find this person attractive? (Select all that apply)",
-//             options: ["Nice", "Happy", "Sad", "Interesting", "Confident", "Other"],
-//             vertical: true,
-//             required: true,
-//             name: "reasons"
-//         }
-//     ],
-//     data: {
-//         trial_id: 'reason_for_attractiveness'
-//     }
-// };
 
 // Define the timeline variables (set of images)
 var imageFiles = jsPsych.randomization.sampleWithoutReplacement([
@@ -200,13 +235,11 @@ var imageFiles = jsPsych.randomization.sampleWithoutReplacement([
     { image: 'generated_faces/face_463.png' },
     { image: 'generated_faces/face_472.png' },
     { image: 'generated_faces/face_473.png' },
-
 ],
 10);
 
 // Create trials dynamically based on the image files
 var judgmentTrials = {
-    type: jsPsychHtmlButtonResponse,
     timeline: [
         imageStimulus,  // Image display
         attractivenessRatingAndReasons // Combined attractiveness rating and reasons
@@ -218,6 +251,44 @@ var judgmentTrials = {
     }),
     randomize_order: true // Randomize the image order
 };
+
+// mobile dev
+document.head.insertAdjacentHTML('beforeend', `
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            max-width: 100%;
+            box-sizing: border-box;
+            touch-action: manipulation;
+        }
+        .touch-responsive {
+            cursor: pointer;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+        }
+        .jspsych-btn {
+            touch-action: manipulation;
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 25px;
+            background: #d3d3d3;
+            outline: none;
+            border-radius: 12px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 35px;
+            height: 35px;
+            background: #4CAF50;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+    </style>
+`);
 
 // Save the data to a CSV file
 var filename = 'Face_Attractiveness_' + Date.now() + '.csv';
@@ -238,12 +309,16 @@ var saveData = {
 // End trial
 const endTrial = {
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: 'Nothing left to do here.'
+    stimulus: '<div style="font-size: 24px; text-align: center; margin-top: 40px;">Thank you for participating!<br><br>Tap anywhere or press any key to finish.</div>',
+    on_load: function() {
+        document.addEventListener('touchstart', function() {
+            jsPsych.finishTrial();
+        }, {once: true});
+        document.addEventListener('click', function() {
+            jsPsych.finishTrial();
+        }, {once: true});
+    }
 };
 
 // Run the experiment
 jsPsych.run([judgmentTrials, saveData, endTrial]);
-
-
-// ------------------- Event listeners 
-
