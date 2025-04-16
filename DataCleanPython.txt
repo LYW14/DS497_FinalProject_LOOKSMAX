@@ -1,0 +1,13 @@
+import pandas as pd
+import re
+path = ""
+df = pd.read_csv(path)
+df2 = df.copy()
+for i,j in enumerate(df["stimulus"]):
+  if type(j) == str:
+    temp = df2["stimulus"].iloc[i]
+    x = re.search(r'face_\d+\.png', temp)
+    print(x)
+    df2["stimulus"].iloc[i-1] = x.group()
+df2 = df2.dropna(subset = ["reasons_selected"])
+df2.to_csv(path)
